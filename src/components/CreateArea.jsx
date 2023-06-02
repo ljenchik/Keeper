@@ -2,7 +2,6 @@ import { useState } from "react";
 import AddIcon from "@mui/icons-material/Add";
 import Fab from "@mui/material/Fab";
 import Zoom from "@mui/material/Zoom";
-import Textarea from "./Textarea";
 
 export default function CreateArea(props) {
   const [note, setNote] = useState({ title: "", content: "" });
