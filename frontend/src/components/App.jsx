@@ -22,35 +22,50 @@ export default function App() {
     } catch (error) {
       console.log(error);
     }
-  }, [notes]);
+  }, []);
 
   const addNote = async (note) => {
     try {
-      await fetch(`http://localhost:3001/notes`, {
+      await fetch("http://localhost:3001/notes", {
         method: "POST",
         body: JSON.stringify(note),
         headers: {
           "Content-Type": "application/json",
         },
-      });
+      })
+      .then(async (response) => {
+        if (response.ok) {
+        const data = await response.json();
+        const note =  {title: data.title, content: data.content}
+        setNotes([...notes, note]);
+        }
+        else {
+          console.log("Bad response!");
+        }
+      })
     } catch (error) {
       return error;
     }
   };
 
-  const deleteNote = async (note) => {
+  const deleteNote = async (id, note) => {
     try {
-      const response = await fetch(`http://localhost:3001/notes`, {
+      await fetch("http://localhost:3001/notes", {
         method: "DELETE",
         body: JSON.stringify(note),
         headers: {
           "Content-Type": "application/json",
         },
-      });
-      if (response.ok) {
-        const newNotes = notes.filter((item) => item._id !== note._id);
-        setNotes(newNotes);
-      }
+      })
+      .then (async (response) => {
+        if (response.ok) {
+          const newNotes = notes.filter((item, index) => index !== id);
+          setNotes(newNotes);
+        }
+        else {
+          console.log("Bad response!");
+        }
+      })
     } catch (error) {
       return error;
     }
@@ -67,7 +82,7 @@ export default function App() {
             index={index}
             title={note.title}
             content={note.content}
-            onDelete={() => deleteNote(note)}
+            onDelete={() => deleteNote(index, note)}
           />
         ))}
         <Footer />
